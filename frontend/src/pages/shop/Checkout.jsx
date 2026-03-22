@@ -4,8 +4,10 @@ import { getCart, updateCartItem, removeFromCart } from '../../api/cart';
 import { placeOrder } from '../../api/orders';
 import { getProducts } from '../../api/products';
 import Navbar from '../../components/layout/Navbar';
+import { useCart } from '../../context/CartContext'; 
 
 const Checkout = () => {
+    const { fetchCartCount } = useCart(); 
   const [cart, setCart] = useState({ items: [], totalPrice: 0 });
   const [popularProducts, setPopularProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -66,6 +68,7 @@ const Checkout = () => {
     setError('');
     try {
       await placeOrder({ shippingAddress: form });
+          await fetchCartCount();
       navigate('/my-orders');
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to place order');
