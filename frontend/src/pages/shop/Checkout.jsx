@@ -273,34 +273,46 @@ const Checkout = () => {
         </div>
       </div>
 
-      {/* Popular this season */}
-      {popularProducts.length > 0 && (
-        <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '0 48px 56px' }}>
-          <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.4rem', color: '#1a1a1a', textAlign: 'center', marginBottom: '32px', fontWeight: 'normal' }}>
-            Popular this season
-          </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '32px' }}>
-            {popularProducts.map((p, index) => (
-              <Link key={p._id} to={`/product/${p._id}`} style={{ textDecoration: 'none', color: 'inherit', textAlign: 'center' }}>
-                <div style={{ backgroundColor: index === 2 ? '#f0f0f0' : 'transparent', height: '180px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '12px' }}>
-                  {p.images && p.images[0] ? (
-                    <img src={p.images[0]} alt={p.name} style={{ maxHeight: '160px', maxWidth: '100%', objectFit: 'contain' }} />
-                  ) : (
-                    <span style={{ fontSize: '4rem' }}>🍵</span>
-                  )}
-                </div>
-                <p style={{ fontSize: '0.82rem', color: '#444', marginBottom: '2px' }}>{p.name}</p>
-                <p style={{ fontSize: '0.78rem', color: '#888', marginBottom: '4px' }}>{p.category.replace('-', ' ')}</p>
-                <p style={{ fontSize: '0.8rem', color: '#555' }}>
-                  ${p.variants[0]?.price}
-                  <span style={{ fontSize: '0.72rem', color: '#aaa' }}> / {p.variants[0]?.name}</span>
-                </p>
-              </Link>
-            ))}
+     {/* Popular this season */}
+{popularProducts.length > 0 && (
+  <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '0 48px 56px' }}>
+    <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.4rem', color: '#1a1a1a', textAlign: 'center', marginBottom: '32px', fontWeight: 'normal' }}>
+      Popular this season
+    </h2>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '32px' }}>
+      {popularProducts.map((p) => (
+        <Link key={p._id} to={`/product/${p._id}`} style={{ textDecoration: 'none', color: 'inherit', textAlign: 'center' }}>
+          <div style={{
+            backgroundColor: '#f5f5f5',
+            height: '200px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: '12px',
+            overflow: 'hidden',
+            borderRadius: '4px',
+          }}>
+            {p.images && p.images[0] ? (
+              <img
+                src={p.images[0]}
+                alt={p.name}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            ) : (
+              <span style={{ fontSize: '4rem' }}>🍵</span>
+            )}
           </div>
-        </div>
-      )}
-
+          <p style={{ fontSize: '0.82rem', color: '#444', marginBottom: '2px' }}>{p.name}</p>
+          <p style={{ fontSize: '0.78rem', color: '#888', marginBottom: '4px' }}>{p.category.replace('-', ' ')}</p>
+          <p style={{ fontSize: '0.8rem', color: '#555' }}>
+            ${p.variants[0]?.price}
+            <span style={{ fontSize: '0.72rem', color: '#aaa' }}> / {p.variants[0]?.name}</span>
+          </p>
+        </Link>
+      ))}
+    </div>
+  </div>
+)}
       {/* Footer */}
       <footer style={{ backgroundColor: '#F4F4F4', color: '#0a0909', padding: '48px 32px 24px' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '32px', marginBottom: '32px' }}>

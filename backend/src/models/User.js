@@ -32,20 +32,19 @@ const userSchema = new mongoose.Schema({
 // --- FIXED MIDDLEWARE ---
 // 1. Changed to a regular function(next) to keep 'this' context
 // 2. Added 'next' as a parameter so it can be called
-userSchema.pre('save', async function (next) {
-  // If password isn't being changed (like when blocking a user), skip hashing
+userSchema.pre('save', async function () {
   if (!this.isModified('password')) {
-    return; // This was the line causing your 500 error!
+    return ; // ← was just return; which hangs the operation
   }
 
   try {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
+    ; // ← this was completely missing after successful hash
   } catch (err) {
     next(err);
   }
 });
-
 // Compare password method
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);

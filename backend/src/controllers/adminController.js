@@ -12,6 +12,8 @@ const getDashboard = async (req, res) => {
     const pendingOrders = await Order.countDocuments({ status: 'pending' });
     const shippedOrders = await Order.countDocuments({ status: 'shipped' });
     const deliveredOrders = await Order.countDocuments({ status: 'delivered' });
+    const processingOrders = await Order.countDocuments({ status: 'processing' });
+
     const cancelledOrders = await Order.countDocuments({ status: 'cancelled' });
     const lowStockProducts = await Product.find({
       'variants.stock': { $lt: 10 },
@@ -28,6 +30,7 @@ const getDashboard = async (req, res) => {
         shipped: shippedOrders,
         delivered: deliveredOrders,
         cancelled: cancelledOrders,
+        processing: processingOrders,
       },
       lowStockProducts,
     });

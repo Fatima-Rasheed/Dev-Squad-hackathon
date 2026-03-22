@@ -310,7 +310,7 @@ const Collections = () => {
       </div>
 
       {/* Footer */}
-      <footer style={{ backgroundColor: '#F4F4F4', color: '#060505', padding: '48px 32px 24px' }}>
+      <footer id='contact' style={{ backgroundColor: '#F4F4F4', color: '#060505', padding: '48px 32px 24px' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '32px', marginBottom: '32px' }}>
           <div>
             <h4 style={{ fontSize: '0.75rem', letterSpacing: '0.15em', marginBottom: '16px' }}>COLLECTIONS</h4>

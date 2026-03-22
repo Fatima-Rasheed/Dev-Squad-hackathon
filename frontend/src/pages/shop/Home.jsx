@@ -28,34 +28,35 @@ const Home = () => {
     <div className="min-h-screen bg-white" style={{ fontFamily: 'sans-serif' }}>
       <Navbar />
 
-      {/* Hero Section */}
+  
      {/* Hero Section */}
 <section style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', minHeight: '500px' }}>
-  {/* Left - Image */}
-  <div style={{ overflow: 'hidden' }}>
-    <img
-      src="https://images.unsplash.com/photo-1563822249366-3efb23b8e0c9?w=300"
-      alt="Tea"
-      style={{ width: '100%', height: '100%', objectFit: 'cover', maxHeight: '500px' }}
-    />
-  </div>
-  {/* Right - Text — moved more right with bigger left padding */}
-  <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '60px 80px 60px 100px', backgroundColor: '#fff' }}>
-    <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '2.8rem', lineHeight: '1.2', color: '#1a1a1a', marginBottom: '1.5rem' }}>
-      Every day is unique,<br />just like our tea
-    </h1>
-    <p style={{ color: '#888', fontSize: '0.9rem', lineHeight: '1.8', marginBottom: '2.5rem', maxWidth: '360px' }}>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis mattis lorem vitae ante diam ornare. Donec orci.
-    </p>
-    <div>
-      <Link to="/collections"
-        style={{ backgroundColor: '#1a1a1a', color: '#fff', padding: '14px 36px', fontSize: '0.8rem', letterSpacing: '0.12em', textDecoration: 'none', display: 'inline-block' }}>
-        EXPLORE TEAS
-      </Link>
-    </div>
-  </div>
-</section>
+{/* Left - Image */}
+<div style={{ overflow: 'hidden', width: '520px' }}>
+  <img
+    src="https://images.unsplash.com/photo-1563822249366-3efb23b8e0c9?w=300"
+    alt="Tea"
+    style={{ width: '100%', height: '100%', marginTop: '32px', marginBottom: '32px', objectFit: 'cover', maxHeight: '500px' }}
+  />
+</div>
 
+{/* Right - Text */}
+<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '60px 80px 60px 48px', backgroundColor: '#fff' }}>
+  <h1 style={{ fontFamily: 'Prosto One', fontSize: '2rem', lineHeight: '1.2', color: '#1a1a1a', marginBottom: '1rem' }}>
+    Every day is unique,<br />just like our tea
+  </h1>
+  <p style={{ color: '#888', fontSize: '0.9rem', lineHeight: '1.8', marginBottom: '1.5rem', maxWidth: '360px' }}>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis mattis lorem vitae ante diam ornare. Donec orci. 
+    Lorem ipsum dolor sit <br />  amet consectetur adipisicing elit. Optio eum quam quisquam quod voluptas nihil voluptates cumque laborum porro. 
+  </p>
+  <div>
+    <Link to="/collections"
+      style={{ backgroundColor: '#1a1a1a', color: '#fff', padding: '14px 36px', fontSize: '0.8rem', letterSpacing: '0.12em', textDecoration: 'none', display: 'inline-block' }}>
+      BROWSE TEAS
+    </Link>
+  </div>
+</div>
+</section>
 {/* Gap */}
 <div style={{ height: '24px', backgroundColor: '#fff' }} />
 
@@ -63,13 +64,19 @@ const Home = () => {
 <section style={{ backgroundColor: '#f5f5f5', borderTop: '1px solid #eee', borderBottom: '1px solid #eee', padding: '20px 0' }}>
   <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 48px' }}>
     {[
-      { icon: '🌿', text: '400+ KINDS OF LOOSELEAF TEA' },
+      { icon:  '🌿', text: '400+ KINDS OF LOOSELEAF TEA' },
       { icon: '✓', text: 'CERTIFICATED ORGANIC TEAS' },
       { icon: '🚚', text: 'FREE DELIVERY' },
       { icon: '🎁', text: 'SAMPLE FOR ALL TEAS' },
     ].map((f, i) => (
       <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <span style={{ fontSize: '1rem' }}>{f.icon}</span>
+<span style={{
+  fontSize: '1rem',
+  filter: f.icon === '✓' ? 'none' : 'grayscale(1) brightness(0)',
+  color: '#000'
+}}>
+  {f.icon}
+</span>
         <span style={{ fontSize: '0.7rem', letterSpacing: '0.06em', color: '#555' }}>{f.text}</span>
       </div>
     ))}

@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getCart, updateCartItem, removeFromCart } from '../../api/cart';
 import { getProducts } from '../../api/products';
+import { useCart } from '../../context/CartContext'; // ← added
 import Navbar from '../../components/layout/Navbar';
 
 const Cart = () => {
   const [cart, setCart] = useState({ items: [], totalPrice: 0 });
   const [popularProducts, setPopularProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { fetchCartCount } = useCart(); // ← added
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,6 +31,7 @@ const Cart = () => {
     try {
       const res = await updateCartItem(itemId, { quantity: newQty });
       setCart(res.data);
+      await fetchCartCount(); // ← added
     } catch (err) {
       alert(err.response?.data?.message || 'Error updating quantity');
     }
@@ -38,6 +41,7 @@ const Cart = () => {
     try {
       const res = await removeFromCart(itemId);
       setCart(res.data);
+      await fetchCartCount(); // ← added
     } catch (err) {
       console.error(err);
     }
@@ -89,7 +93,6 @@ const Cart = () => {
                       <p className="text-sm sm:text-[0.95rem] text-gray-900 font-serif mb-0 pr-4">
                         {item.product?.name}
                       </p>
-                      {/* Updated Currency Symbol */}
                       <p className="text-sm sm:text-[0.95rem] text-gray-900 font-sans font-medium mb-0 whitespace-nowrap">
                         ${item.variant.price * item.quantity}
                       </p>
@@ -97,7 +100,6 @@ const Cart = () => {
                     <p className="text-xs sm:text-[0.8rem] text-gray-500 mb-1 font-sans">
                       Weight: {item.variant.name}
                     </p>
-                    {/* Updated Currency Symbol */}
                     <p className="text-xs sm:text-[0.8rem] text-gray-500 font-sans">
                       ${item.variant.price} / item
                     </p>
@@ -132,7 +134,6 @@ const Cart = () => {
 
             <div className="flex justify-between mb-3">
               <span className="text-sm text-gray-500">Subtotal</span>
-              {/* Updated Currency Symbol */}
               <span className="text-sm text-gray-900">${cart.totalPrice}</span>
             </div>
             <div className="flex justify-between mb-5 pb-5 border-b border-gray-200">
@@ -141,7 +142,6 @@ const Cart = () => {
             </div>
             <div className="flex justify-between mb-6">
               <span className="text-base text-gray-900 font-medium">Total</span>
-              {/* Updated Currency Symbol */}
               <span className="text-base text-gray-900 font-medium">${cart.totalPrice}</span>
             </div>
 
@@ -158,11 +158,11 @@ const Cart = () => {
           <div className="text-center font-sans">
             <p className="text-[11px] text-gray-500 tracking-wider mb-3">WE ACCEPT</p>
             <div className="flex justify-center gap-2 mb-4">
-                {['VISA', 'MC', 'AMEX', 'PAY'].map((brand) => (
-                  <div key={brand} className="w-10 h-6 bg-gray-100 rounded flex items-center justify-center text-[10px] text-gray-600 border border-gray-200">
-                    {brand}
-                  </div>
-                ))}
+              {['VISA', 'MC', 'AMEX', 'PAY'].map((brand) => (
+                <div key={brand} className="w-10 h-6 bg-gray-100 rounded flex items-center justify-center text-[10px] text-gray-600 border border-gray-200">
+                  {brand}
+                </div>
+              ))}
             </div>
             <p className="text-[11px] text-gray-400">
               🔒 Safe & secure payments
@@ -190,7 +190,6 @@ const Cart = () => {
                   </div>
                   <p className="text-[13px] md:text-[0.85rem] text-gray-800 mb-1 font-serif group-hover:text-black">{p.name}</p>
                   <p className="text-[10px] md:text-[0.75rem] text-gray-500 mb-1.5 font-sans track-wider uppercase">{p.category.replace('-', ' ')}</p>
-                  {/* Updated Currency Symbol in cross-sell */}
                   <p className="text-[13px] md:text-[0.8rem] text-gray-800 font-sans font-medium mb-0">
                     ${p.variants[0]?.price}
                     <span className="text-[10px] md:text-[0.7rem] text-gray-400 font-normal ml-1">/ {p.variants[0]?.name}</span>
@@ -201,8 +200,6 @@ const Cart = () => {
           </div>
         </div>
       )}
-
-      {/* Footer code remains same */}
     </div>
   );
 };

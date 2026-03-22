@@ -4,10 +4,12 @@ import { getProductById, getProducts } from '../../api/products';
 import { addToCart } from '../../api/cart';
 import { useAuth } from '../../context/AuthContext';
 import Navbar from '../../components/layout/Navbar';
+import { useCart } from '../../context/CartContext';
 
 const ProductDetail = () => {
   const { id } = useParams();
   const { user } = useAuth();
+  const { fetchCartCount } = useCart();
   const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
@@ -33,20 +35,21 @@ const ProductDetail = () => {
       .finally(() => setLoading(false));
   }, [id]);
 
-  const handleAddToCart = async () => {
-    if (!user) { navigate('/login'); return; }
-    if (!selectedVariant) return;
-    setAddingToCart(true);
-    try {
-      await addToCart({ productId: product._id, variantName: selectedVariant.name, quantity });
-      setCartMessage('Added to bag!');
-      setTimeout(() => setCartMessage(''), 3000);
-    } catch (err) {
-      setCartMessage(err.response?.data?.message || 'Failed to add');
-    } finally {
-      setAddingToCart(false);
-    }
-  };
+ const handleAddToCart = async () => {
+  if (!user) { navigate('/login'); return; }
+  if (!selectedVariant) return;
+  setAddingToCart(true);
+  try {
+    await addToCart({ productId: product._id, variantName: selectedVariant.name, quantity });
+    await fetchCartCount(); // ← add this line
+    setCartMessage('Added to bag!');
+    setTimeout(() => setCartMessage(''), 3000);
+  } catch (err) {
+    setCartMessage(err.response?.data?.message || 'Failed to add');
+  } finally {
+    setAddingToCart(false);
+  }
+};
 
   if (loading) return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -78,15 +81,15 @@ const ProductDetail = () => {
       </div>
 
       {/* Product Main */}
-      <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '32px 48px 48px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '64px', alignItems: 'start' }}>
+      <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '32px 48px 48px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '64px', alignItems: 'center' }}>
 
         {/* Left — Image */}
-        <div style={{ backgroundColor: '#f5f5f5', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px', minHeight: '380px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8px', minHeight: '520px' }}>
           {product.images && product.images[0] ? (
             <img
               src={product.images[0]}
               alt={product.name}
-              style={{ width: '100%', maxHeight: '360px', objectFit: 'contain' }}
+              style={{ width: '100%', height: '460px', objectFit: 'cover', borderRadius: '4px' }}
             />
           ) : (
             <span style={{ fontSize: '8rem' }}>🍵</span>
@@ -95,7 +98,6 @@ const ProductDetail = () => {
 
         {/* Right — Info */}
         <div style={{ paddingTop: '8px' }}>
-
           <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '2rem', color: '#1a1a1a', marginBottom: '12px', lineHeight: '1.2', fontWeight: 'normal' }}>
             {product.name}
           </h1>
@@ -104,22 +106,23 @@ const ProductDetail = () => {
             {product.description}
           </p>
 
+          {/* Icons — black */}
           <div style={{ display: 'flex', gap: '20px', marginBottom: '20px', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '0.9rem' }}>🌐</span>
-              <span style={{ fontSize: '0.8rem', color: '#555' }}>Origin: Iran</span>
+              <span style={{ fontSize: '1.1rem', filter: 'grayscale(1) brightness(0)' }}>🌐</span>
+              <span style={{ fontSize: '0.82rem', color: '#1a1a1a', fontWeight: '500' }}>Origin: Iran</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '0.9rem' }}>🏷️</span>
-              <span style={{ fontSize: '0.8rem', color: '#555' }}>Organic</span>
+              <span style={{ fontSize: '1.1rem', filter: 'grayscale(1) brightness(0)' }}>🏷️</span>
+              <span style={{ fontSize: '0.82rem', color: '#1a1a1a', fontWeight: '500' }}>Organic</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '0.9rem' }}>🌿</span>
-              <span style={{ fontSize: '0.8rem', color: '#555' }}>Vegan</span>
+              <span style={{ fontSize: '1.1rem', filter: 'grayscale(1) brightness(0)' }}>🌿</span>
+              <span style={{ fontSize: '0.82rem', color: '#1a1a1a', fontWeight: '500' }}>Vegan</span>
             </div>
           </div>
 
-          {/* Price — Updated to Dollars */}
+          {/* Price */}
           <p style={{ fontSize: '2rem', color: '#1a1a1a', marginBottom: '20px', fontWeight: '400' }}>
             ${selectedVariant?.price}
           </p>
@@ -168,16 +171,12 @@ const ProductDetail = () => {
               <button
                 onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                 style={{ width: '40px', height: '48px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '1.2rem', color: '#333' }}
-              >
-                −
-              </button>
+              >−</button>
               <span style={{ width: '40px', textAlign: 'center', fontSize: '0.95rem', color: '#333' }}>{quantity}</span>
               <button
                 onClick={() => setQuantity((q) => q + 1)}
                 style={{ width: '40px', height: '48px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '1.2rem', color: '#333' }}
-              >
-                +
-              </button>
+              >+</button>
             </div>
 
             <button
@@ -218,9 +217,8 @@ const ProductDetail = () => {
       </div>
 
       {/* Steeping + About Section */}
-      <div style={{ backgroundColor: '#f5f5f5', padding: '48px 0' }}>
+      <div style={{ backgroundColor: '#F4F4F4', padding: '48px 0' }}>
         <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '0 48px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '80px' }}>
-
           <div>
             <h3 style={{ fontFamily: 'Georgia, serif', fontSize: '1.3rem', color: '#1a1a1a', marginBottom: '28px', fontWeight: 'normal' }}>
               Steeping instructions
@@ -247,7 +245,6 @@ const ProductDetail = () => {
             <h3 style={{ fontFamily: 'Georgia, serif', fontSize: '1.3rem', color: '#1a1a1a', marginBottom: '28px', fontWeight: 'normal' }}>
               About this tea
             </h3>
-
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', marginBottom: '28px', borderBottom: '1px solid #e5e5e5', paddingBottom: '20px' }}>
               {[
                 { label: 'FLAVOR', value: product.flavor || 'Spicy' },
@@ -261,7 +258,6 @@ const ProductDetail = () => {
                 </div>
               ))}
             </div>
-
             <h4 style={{ fontFamily: 'Georgia, serif', fontSize: '1.1rem', color: '#1a1a1a', marginBottom: '12px', fontWeight: 'normal' }}>
               Ingredient
             </h4>
@@ -272,40 +268,42 @@ const ProductDetail = () => {
         </div>
       </div>
 
-      {/* You may also like — Updated to Dollars */}
+      {/* You may also like — bigger images */}
       {relatedProducts.length > 0 && (
-        <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '56px 48px' }}>
+      <div style={{ maxWidth: '900px', margin: '0 auto', padding: '56px 48px' }}>
           <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.6rem', color: '#1a1a1a', textAlign: 'center', marginBottom: '40px', fontWeight: 'normal' }}>
             You may also like
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '32px' }}>
-            {relatedProducts.slice(0, 3).map((p, index) => (
+            {relatedProducts.slice(0, 3).map((p) => (
               <Link
                 key={p._id}
                 to={`/product/${p._id}`}
                 style={{ textDecoration: 'none', color: 'inherit', textAlign: 'center' }}
               >
                 <div style={{
-                  backgroundColor: index === 2 ? '#f0f0f0' : 'transparent',
-                  height: '200px',
+                  backgroundColor: '#f5f5f5',
+                  height: '280px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   marginBottom: '16px',
+                  overflow: 'hidden',
+                  borderRadius: '4px',
                 }}>
                   {p.images && p.images[0] ? (
                     <img
                       src={p.images[0]}
                       alt={p.name}
-                      style={{ maxHeight: '180px', maxWidth: '100%', objectFit: 'contain' }}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />
                   ) : (
-                    <span style={{ fontSize: '4rem' }}>🍵</span>
+                    <span style={{ fontSize: '5rem' }}>🍵</span>
                   )}
                 </div>
-                <p style={{ fontSize: '0.85rem', color: '#444', marginBottom: '2px', lineHeight: '1.4' }}>{p.name}</p>
+                <p style={{ fontSize: '0.9rem', color: '#333', marginBottom: '4px', lineHeight: '1.4', fontWeight: '500' }}>{p.name}</p>
                 <p style={{ fontSize: '0.8rem', color: '#888', marginBottom: '6px' }}>{p.category.replace('-', ' ')}</p>
-                <p style={{ fontSize: '0.82rem', color: '#555' }}>
+                <p style={{ fontSize: '0.85rem', color: '#555' }}>
                   ${p.variants[0]?.price}
                   <span style={{ fontSize: '0.75rem', color: '#aaa' }}> / {p.variants[0]?.name}</span>
                 </p>

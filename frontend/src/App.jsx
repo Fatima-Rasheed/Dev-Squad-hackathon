@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
+import { CartProvider } from './context/CartContext';
 
 // Shop Pages
 import Home from './pages/shop/Home';
@@ -22,13 +23,16 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+           <CartProvider>
         <Routes>
           {/* --- PUBLIC ROUTES --- */}
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/collections" element={<Collections />} />
-          <Route path="/product/:id" element={<ProductDetail />} />
+           {/* --- PUBLIC ROUTES --- */}
+<Route path="/" element={<Navigate to="/login" replace />} />
+<Route path="/home" element={<Home />} />
+<Route path="/login" element={<Login />} />
+<Route path="/register" element={<Register />} />
+<Route path="/collections" element={<Collections />} />
+<Route path="/product/:id" element={<ProductDetail />} />
 
           {/* --- USER PROTECTED ROUTES --- */}
           {/* These require a login but any role (user/admin) can access */}
@@ -76,6 +80,7 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
           
         </Routes>
+            </CartProvider>
       </AuthProvider>
     </BrowserRouter>
   );
